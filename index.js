@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(cors({
     credentials: true,
-    origin: ['http://127.0.0.1:5173', 'http://localhost:5173', process.env.CLIENT_URL]
+    origin: 'http://127.0.0.1:5173'
 }));
 
 app.get('/test', (req, res) => {
@@ -47,12 +47,11 @@ app.post('/register', async (req, res) => {
             email,
             password: bcryptjs.hashSync(password, bcryptSalt),
         });
-        res.json(userDoc);
     }
     catch (e) {
         res.status(422).json(e)
     }
-    //res.json(userDoc);
+    res.json(userDoc);
 });
 
 app.post('/login', async (req, res) => {
