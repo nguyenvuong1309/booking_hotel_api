@@ -1,48 +1,31 @@
-const express = require('express');
-const cors = require('cors');
+
+
+
+
+
+
 const mongoose = require('mongoose');
+require('dotenv').config();
+const User = require('../models/User.js');
+const Place = require('../models/Place.js');
+const Booking = require('../models/Booking.js');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('./models/User.js');
-const Place = require('./models/Place.js');
-const Booking = require('./models/Booking.js');
-const cookieParser = require('cookie-parser');
-const imageDownloader = require("image-downloader");
-const multer = require("multer");
 const fs = require('fs');
-const initWebRoutes = require('./routes/api.js');
-require('dotenv').config();
-const app = express();
-
-const bcryptSalt = bcryptjs.genSaltSync(10);
-//const jwtSecret = 'vuong'
+const imageDownloader = require("image-downloader");
+const userServices = require("../services/userServices.js");
 
 
-app.use(express.json());
-app.use('/uploads', express.static(__dirname + '/uploads'));
-app.use(cors({
-    credentials: true,
-    origin: ['http://127.0.0.1:5173', 'http://localhost:5173', 'https://hotel-booking-website-jqka.netlify.app'],
-}));
-app.use(cookieParser());
+const jwtSecret = process.env.JWT_SECRET;
 
 
-initWebRoutes(app);
-const PORT = 4000;
-app.listen(PORT, () => {
-    console.log("🚀 ~ file: index.js:33 ~ app.listen ~ PORT:", PORT)
-})
-
-
-{/*
-
-
-app.get('/test', (req, res) => {
-    res.json('test ok');
-});
 
 mongoose.connect(process.env.MONGO_URL).then(() => console.log("🚀 ~ file: index.js:32 ~ 'Connected!':", 'Connected!'));;
 
+
+const handleHelloWorld = (req, res) => {
+    return res.json('test hello world');
+}
 
 function getUserDataFromReq(req) {
     return new Promise((resolve, reject) => {
@@ -52,7 +35,8 @@ function getUserDataFromReq(req) {
         });
     });
 }
-app.post('/register', async (req, res) => {
+
+const handleRegister = async (req, res) => {
     const { name, email, password } = req.body;
     try {
         const userDoc = await User.create({
@@ -65,9 +49,9 @@ app.post('/register', async (req, res) => {
     catch (e) {
         res.status(422).json(e)
     }
-});
+};
 
-app.post('/login', async (req, res) => {
+const handleLogin = async (req, res) => {
     const { email, password } = req.body;
     const userDoc = await User.findOne({ email })
     const passOk = bcryptjs.compareSync(password, userDoc.password)
@@ -94,10 +78,9 @@ app.post('/login', async (req, res) => {
     } else {
         res.status(422).json('not found')
     }
-});
+};
 
-
-app.get('/profile', (req, res) => {
+const handleGetProfile = (req, res) => {
     const { token } = req.cookies
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -108,25 +91,23 @@ app.get('/profile', (req, res) => {
     } else {
         res.json(null);
     }
-})
+};
 
-
-app.post('/logout', (req, res) => {
+const handleLogout = (req, res) => {
     res.cookie('token', '').json(true);
-})
+};
 
-app.post('/upload-by-link', async (req, res) => {
+const handlePost_Upload_By_Link = async (req, res) => {
     const { link } = req.body;
     const newName = 'photo' + Date.now() + '.jpg';
     await imageDownloader.image({
         url: link,
-        dest: __dirname + '/uploads/' + newName,
+        dest: __dirname + '/../uploads/' + newName,
     });
     res.json(newName);
-})
+};
 
-const photosMiddleware = multer({ dest: 'uploads/' });
-app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
+const handlePostUpload = (req, res) => {
     const uploadedFiles = [];
     for (let i = 0; i < req.files.length; i++) {
         const { path, originalname } = req.files[i];
@@ -137,9 +118,9 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
         uploadedFiles.push(newPath.replace('uploads\\', ''))
     }
     res.json(uploadedFiles);
-});
+};
 
-app.post('/places', (req, res) => {
+const handlePostPlaces = (req, res) => {
     const { token } = req.cookies;
     const {
         title, address, addedPhotos,
@@ -158,9 +139,9 @@ app.post('/places', (req, res) => {
         });
         res.json(placeDoc);
     });
-});
+};
 
-app.get('/user-places', (req, res) => {
+const handleGet_User_places = (req, res) => {
     const { token } = req.cookies;
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -176,14 +157,15 @@ app.get('/user-places', (req, res) => {
     } else {
         console.log("🚀 ~ file: index.js:164 ~ app.get ~ 'Do not have token':", 'Do not have token')
     }
-});
+};
 
-app.get('/places/:id', async (req, res) => {
+const handleGetPlacesById = async (req, res) => {
     const { id } = req.params;
     res.json(await Place.findById(id));
-});
+};
 
-app.put('/places', async (req, res) => {
+
+const handleUpdatePlaces = async (req, res) => {
     const { token } = req.cookies;
     const {
         id,
@@ -209,14 +191,13 @@ app.put('/places', async (req, res) => {
             res.json('ok');
         }
     });
-});
+};
 
-app.get('/places', async (req, res) => {
+const handleGetAllPlaces = async (req, res) => {
     res.json(await Place.find({}))
-})
+};
 
-
-app.post('/bookings', async (req, res) => {
+const handleBookingsRoom = async (req, res) => {
     const userData = await getUserDataFromReq(req);
     const {
         place, checkIn, checkOut,
@@ -231,15 +212,41 @@ app.post('/bookings', async (req, res) => {
     }).catch((err) => {
         throw err;
     })
-});
+};
 
-
-app.get('/bookings', async (req, res) => {
+const handleGetBookingInfo = async (req, res) => {
     const userData = await getUserDataFromReq(req);
     res.json(await Booking.find({ user: userData.id }).populate('place'));
-});
+};
 
-app.listen(4000);
+const handleCreateComment = async (req, res) => {
+    const { placeId, message, commenter } = req.body;
+}
+
+const handleGetAllComments = async (req, res) => {
+    const { idPlace } = req.params;
+    console.log("🚀 ~ file: homeController.js:224 ~ handleGetAllComments ~ idPlace:", idPlace)
+    console.log("🚀 ~ file: homeController.js:224 ~ handleGetAllComments ~ req.params:", req.params)
+    // const userData = await userServices.getAllComments(req);
+}
 
 
-*/}
+
+module.exports = {
+    handleHelloWorld,
+    handleRegister,
+    handleLogin,
+    handleGetProfile,
+    handleLogout,
+    handlePost_Upload_By_Link,
+    handlePostUpload,
+    handlePostPlaces,
+    handleGet_User_places,
+    handleGetPlacesById,
+    handleUpdatePlaces,
+    handleGetAllPlaces,
+    handleBookingsRoom,
+    handleGetBookingInfo,
+    handleCreateComment,
+    handleGetAllComments,
+}
