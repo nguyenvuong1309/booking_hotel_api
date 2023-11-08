@@ -9,6 +9,7 @@ require('dotenv').config();
 const User = require('../models/User.js');
 const Place = require('../models/Place.js');
 const Booking = require('../models/Booking.js');
+const Comment = require('../models/Comment.js');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
@@ -221,13 +222,24 @@ const handleGetBookingInfo = async (req, res) => {
 
 const handleCreateComment = async (req, res) => {
     const { placeId, message, commenter } = req.body;
+    try {
+        const userDoc = await Comment.create({
+            placeId,
+            message,
+            commenter
+        });
+        res.json(userDoc);
+    }
+    catch (e) {
+        console.log("🚀 ~ file: homeController.js:234 ~ handleCreateComment ~ e:", e)
+        res.status(422).json(e)
+    }
 }
 
 const handleGetAllComments = async (req, res) => {
     const { idPlace } = req.params;
-    console.log("🚀 ~ file: homeController.js:224 ~ handleGetAllComments ~ idPlace:", idPlace)
-    console.log("🚀 ~ file: homeController.js:224 ~ handleGetAllComments ~ req.params:", req.params)
-    // const userData = await userServices.getAllComments(req);
+    const comments = await userServices.getAllComments(idPlace);
+    res.json(comments)
 }
 
 

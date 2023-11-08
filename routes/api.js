@@ -25,7 +25,7 @@ const initWebRoutes = (app) => {
     router.get('/bookings', homeController.handleGetBookingInfo)
 
     // route nay la de thuc hien cac thao tac voi comment.
-    //router.post("create-comment",)
+    router.post("/create-comment", homeController.handleCreateComment);
     router.get("/comments/:idPlace", homeController.handleGetAllComments);
     return app.use("/", router);
 }
