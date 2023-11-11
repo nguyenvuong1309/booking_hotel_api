@@ -27,6 +27,12 @@ const initWebRoutes = (app) => {
     // route nay la de thuc hien cac thao tac voi comment.
     router.post("/create-comment", homeController.handleCreateComment);
     router.get("/comments/:idPlace", homeController.handleGetAllComments);
+
+
+
+    // router.get("/hotels/countByType", homeController.countByType);
+    // router.get("/hotels/countByCity", homeController.countByCity);
+    // router.get("/", getHotels);
     return app.use("/", router);
 }
 

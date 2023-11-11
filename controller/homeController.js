@@ -10,6 +10,7 @@ const User = require('../models/User.js');
 const Place = require('../models/Place.js');
 const Booking = require('../models/Booking.js');
 const Comment = require('../models/Comment.js');
+const Hotel = require("../models/Hotel.js");
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
@@ -21,7 +22,7 @@ const jwtSecret = process.env.JWT_SECRET;
 
 
 
-mongoose.connect(process.env.MONGO_URL).then(() => console.log("🚀 ~ file: index.js:32 ~ 'Connected!':", 'Connected!'));;
+// mongoose.connect(process.env.MONGO_URL).then(() => console.log("🚀 ~ file: index.js:32 ~ 'Connected!':", 'Connected!'));;
 
 
 const handleHelloWorld = (req, res) => {
@@ -261,4 +262,5 @@ module.exports = {
     handleGetBookingInfo,
     handleCreateComment,
     handleGetAllComments,
+
 }

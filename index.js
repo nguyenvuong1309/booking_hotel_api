@@ -11,6 +11,8 @@ const imageDownloader = require("image-downloader");
 const multer = require("multer");
 const fs = require('fs');
 const initWebRoutes = require('./routes/api.js');
+const hotelRoute = require('../api/routes/hotel.js')
+
 require('dotenv').config();
 const app = express();
 
@@ -28,10 +30,17 @@ app.use(cookieParser());
 
 
 initWebRoutes(app);
+app.use("/", hotelRoute);
+
+
+
 const PORT = 4000;
 app.listen(PORT, () => {
     console.log("🚀 ~ file: index.js:33 ~ app.listen ~ PORT:", PORT)
 })
+
+
+mongoose.connect(process.env.MONGO_URL).then(() => console.log("🚀 ~ file: index.js:43 ~ process.env.MONGO_URL:", "Connected !"));
 
 
 {/*
