@@ -11,7 +11,7 @@ const imageDownloader = require("image-downloader");
 const multer = require("multer");
 const fs = require('fs');
 const initWebRoutes = require('./routes/api.js');
-const hotelRoute = require('../api/routes/hotel.js')
+const hotelRoute = require('./routes/hotel.js');
 
 require('dotenv').config();
 const app = express();
