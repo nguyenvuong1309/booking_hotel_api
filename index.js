@@ -19,7 +19,6 @@ const app = express();
 const bcryptSalt = bcryptjs.genSaltSync(10);
 //const jwtSecret = 'vuong'
 
-
 app.use(express.json());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(cors({
