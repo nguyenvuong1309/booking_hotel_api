@@ -28,7 +28,7 @@ app.use(cors({
         'http://127.0.0.1:5173',
         'http://localhost:5173',
         'https://hotel-booking-website-jqka.netlify.app',
-        'https://hotel-booking-client-bice.vercel.app/'
+        'https://hotel-booking-client-bice.vercel.app'
     ],
 }));
 app.use(cookieParser());
