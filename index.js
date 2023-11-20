@@ -12,6 +12,7 @@ const multer = require("multer");
 const fs = require('fs');
 const initWebRoutes = require('./routes/api.js');
 const hotelRoute = require('./routes/hotel.js');
+const userRoute = require('./routes/user.js');
 
 require('dotenv').config();
 const app = express();
@@ -23,14 +24,19 @@ app.use(express.json());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(cors({
     credentials: true,
-    origin: ['http://127.0.0.1:5173', 'http://localhost:5173', 'https://hotel-booking-website-jqka.netlify.app'],
+    origin: [
+        'http://127.0.0.1:5173',
+        'http://localhost:5173',
+        'https://hotel-booking-website-jqka.netlify.app',
+        'https://hotel-booking-client-bice.vercel.app/'
+    ],
 }));
 app.use(cookieParser());
 
 
 initWebRoutes(app);
 app.use("/", hotelRoute);
-
+app.use("/", userRoute);
 
 
 const PORT = 4000;

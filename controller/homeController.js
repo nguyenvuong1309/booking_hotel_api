@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const imageDownloader = require("image-downloader");
 const userServices = require("../services/userServices.js");
-
+const bcryptSalt = bcryptjs.genSaltSync(10);
 
 const jwtSecret = process.env.JWT_SECRET;
 
