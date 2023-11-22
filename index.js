@@ -12,7 +12,9 @@ const multer = require("multer");
 const fs = require('fs');
 const initWebRoutes = require('./routes/api.js');
 const hotelRoute = require('./routes/hotel.js');
+const roomRoute = require('./routes/room.js');
 const userRoute = require('./routes/user.js');
+
 
 require('dotenv').config();
 const app = express();
@@ -36,6 +38,7 @@ app.use(cookieParser());
 
 initWebRoutes(app);
 app.use("/", hotelRoute);
+app.use("/", roomRoute);
 app.use("/", userRoute);
 
 

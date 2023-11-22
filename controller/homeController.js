@@ -75,7 +75,13 @@ const handleLogin = async (req, res) => {
             id: userDoc._id,
             name: userDoc.name
         }, jwtSecret, { expiresIn: "1d" })
-        res.cookie("token", token);
+        res.cookie("token", token,
+            {
+                httpOnly: true,
+                path: "/",
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
+            }
+        );
         res.json(userDoc);
     } else {
         res.status(422).json('not found')
