@@ -27,10 +27,10 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(cors({
     credentials: true,
     origin: [
-        'http://127.0.0.1:5173',
         'http://localhost:5173',
         'https://hotel-booking-website-jqka.netlify.app',
-        'https://hotel-booking-client-bice.vercel.app'
+        'https://hotel-booking-client-bice.vercel.app',
+        'https://hotel-booking-client-nopskz22g-vuongs-projects-c0daf0e4.vercel.app',
     ],
 }));
 app.use(cookieParser());

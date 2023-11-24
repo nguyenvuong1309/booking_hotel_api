@@ -16,6 +16,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const imageDownloader = require("image-downloader");
 const userServices = require("../services/userServices.js");
+const { setCookie } = require('cookies-next');
+
 const bcryptSalt = bcryptjs.genSaltSync(10);
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -79,17 +81,20 @@ const handleLogin = async (req, res) => {
             {
                 httpOnly: true,
                 path: "/",
+                domain: 'hotel-booking-client-bice.vercel.app',
                 maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
             }
         );
-        res.json(userDoc);
+        setCookie(token, token, { req, res });
+        res.json({ 'token': token });
     } else {
         res.status(422).json('not found')
     }
 };
 
 const handleGetProfile = (req, res) => {
-    const { token } = req.cookies
+    const token = req.headers['authorization'].split(' ')[1]
+    console.log(req.headers['authorization'].split(' ')[1])
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
             if (err) throw err;
@@ -129,6 +134,7 @@ const handlePostUpload = (req, res) => {
 };
 
 const handlePostPlaces = (req, res) => {
+    console.log(req.headers)
     const { token } = req.cookies;
     const {
         title, address, addedPhotos,
@@ -170,6 +176,38 @@ const handleGet_User_places = (req, res) => {
 const handleGetPlacesById = async (req, res) => {
     const { id } = req.params;
     res.json(await Place.findById(id));
+    // res.json(
+    //     {
+    //         "_id": "6548502f894e222125790937",
+    //         "owner": "653fc6277a4b4bfeb4cf578e",
+    //         "title": "Terracotta Hotel and Resort Dalat",
+    //         "address": "Dalat",
+    //         "photos": [
+    //             // "photo1699200420541.jpg",
+    //             // "photo1699359277935.jpg"
+    //             "https://pix8.agoda.net/hotelImages/836781/-1/9c8c65a6230157f1f6d562b237cbc6a8.png?ce=0&s=1024x768",
+    //             "https://q-xx.bstatic.com/xdata/images/hotel/max1024x768/156676374.jpg?k=2224b3b816dd757306c9b78401b16e504544bf872ecb673d2e60e541cf26f682&o=",
+    //             "https://pix8.agoda.net/hotelImages/836781/-1/bf51a6de7aa7e7d34d51faeada654378.jpg?ca=8&ce=1&s=1024x768",
+    //             "https://pix8.agoda.net/hotelImages/836781/-1/05c0a6caff8143587c07a77ff2b7cd91.jpg?ca=8&ce=1&s=1024x768",
+    //             "https://pix8.agoda.net/hotelImages/836781/-1/f46e1eb77c572999dc1f5c3328904cf2.jpg?ca=8&ce=1&s=1024x768",
+    //             "https://pix8.agoda.net/hotelImages/836/836781/836781_16061010140043370901.jpg?ca=6&ce=1&s=1024x768",
+    //             "https://pix8.agoda.net/hotelImages/836781/-1/9310ca2a59fabd2be17400be7d8884a9.jpg?ca=8&ce=1&s=1024x768",
+    //         ],
+    //         "description": "Dalat",
+    //         "perks": ["wifi", "tv", "pets"],
+    //         "extraInfo": "Dalat",
+    //         "checkIn": 14,
+    //         "checkOut": 11,
+    //         "maxGuests": 2,
+    //         "price": 120,
+    //         "hightLights": ["hospital", "check-in [24-hour]", "airport transfer", "great breakfast", "great view"],
+    //         "Facilities": ["parking", "swimming pool", "free wi-fi"],
+    //         "freecancellation": true,
+    //         "aircondition": true,
+    //         "grade": 8,
+    //         "__v": 1
+    //     }
+    // )
 };
 
 
