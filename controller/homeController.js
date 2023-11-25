@@ -98,7 +98,6 @@ const handleLogin = async (req, res) => {
 
 const handleGetProfile = (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
-    console.log(req.headers['authorization'].split(' ')[1])
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
             if (err) throw err;

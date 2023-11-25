@@ -29,12 +29,16 @@ const BookingHotelRoom = require('../models/BookingHotelRooms.js');
 const HotelRoom = require("../models/HotelRoom.js")
 
 function getUserDataFromReq(req) {
-    return new Promise((resolve, reject) => {
-        jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
-            if (err) throw err;
-            resolve(userData);
+    try {
+        return new Promise((resolve, reject) => {
+            jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
+                if (err) throw err;
+                resolve(userData);
+            });
         });
-    });
+    } catch (err) {
+        console.log("🚀 ~ file: roomController.js:40 ~ getUserDataFromReq ~ err:", err)
+    }
 }
 
 const getRooms = async (req, res) => {
@@ -805,70 +809,70 @@ const getRooms = async (req, res) => {
 
 const getRoomsById = async (req, res) => {
     const { id } = req.params;
-    // res.json(await Place.findById(id));
-    res.json(
-        {
-            _id: "6560907006d8e3b612b21902",
-            sys: {
-                id: "1"
-            },
-            fields: {
-                _id: "",
-                name: "single economy",
-                hotelId: "6548502f894e222125790937",
-                slug: "single-economy",
-                grade: 9,
-                type: "single",
-                price: 100,
-                size: 200,
-                capacity: 1,
-                pets: false,
-                breakfast: false,
-                featured: false,
-                description:
-                    "Street art edison bulb gluten-free, tofu try-hard lumbersexual brooklyn tattooed pickled chambray. Actually humblebrag next level, deep v art party wolf tofu direct trade readymade sustainable hell of banjo. Organic authentic subway tile cliche palo santo, street art XOXO dreamcatcher retro sriracha portland air plant kitsch stumptown. Austin small batch squid gastropub. Pabst pug tumblr gochujang offal retro cloud bread bushwick semiotics before they sold out sartorial literally mlkshk. Vaporware hashtag vice, sartorial before they sold out pok pok health goth trust fund cray.",
-                extras: [
-                    "Plush pillows and breathable bed linens",
-                    "Soft, oversized bath towels",
-                    "Full-sized, pH-balanced toiletries",
-                    "Complimentary refreshments",
-                    "Adequate safety/security",
-                    "Internet",
-                    "Comfortable beds"
-                ],
-                images: [
-                    {
-                        fields: {
-                            file: {
-                                url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/room-1.jpeg?raw=true"
-                            }
-                        }
-                    },
-                    {
-                        fields: {
-                            file: {
-                                url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-2.jpeg?raw=true"
-                            }
-                        }
-                    },
-                    {
-                        fields: {
-                            file: {
-                                url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-3.jpeg?raw=true"
-                            }
-                        }
-                    },
-                    {
-                        fields: {
-                            file: {
-                                url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-4.jpeg?raw=true"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-    )
+    res.json(await HotelRoom.findById(id));
+    // res.json(
+    //     {
+    //         _id: "6560907006d8e3b612b21902",
+    //         sys: {
+    //             id: "1"
+    //         },
+    //         fields: {
+    //             _id: "",
+    //             name: "single economy",
+    //             hotelId: "6548502f894e222125790937",
+    //             slug: "single-economy",
+    //             grade: 9,
+    //             type: "single",
+    //             price: 100,
+    //             size: 200,
+    //             capacity: 1,
+    //             pets: false,
+    //             breakfast: false,
+    //             featured: false,
+    //             description:
+    //                 "Street art edison bulb gluten-free, tofu try-hard lumbersexual brooklyn tattooed pickled chambray. Actually humblebrag next level, deep v art party wolf tofu direct trade readymade sustainable hell of banjo. Organic authentic subway tile cliche palo santo, street art XOXO dreamcatcher retro sriracha portland air plant kitsch stumptown. Austin small batch squid gastropub. Pabst pug tumblr gochujang offal retro cloud bread bushwick semiotics before they sold out sartorial literally mlkshk. Vaporware hashtag vice, sartorial before they sold out pok pok health goth trust fund cray.",
+    //             extras: [
+    //                 "Plush pillows and breathable bed linens",
+    //                 "Soft, oversized bath towels",
+    //                 "Full-sized, pH-balanced toiletries",
+    //                 "Complimentary refreshments",
+    //                 "Adequate safety/security",
+    //                 "Internet",
+    //                 "Comfortable beds"
+    //             ],
+    //             images: [
+    //                 {
+    //                     fields: {
+    //                         file: {
+    //                             url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/room-1.jpeg?raw=true"
+    //                         }
+    //                     }
+    //                 },
+    //                 {
+    //                     fields: {
+    //                         file: {
+    //                             url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-2.jpeg?raw=true"
+    //                         }
+    //                     }
+    //                 },
+    //                 {
+    //                     fields: {
+    //                         file: {
+    //                             url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-3.jpeg?raw=true"
+    //                         }
+    //                     }
+    //                 },
+    //                 {
+    //                     fields: {
+    //                         file: {
+    //                             url: "https://github.com/john-smilga/react-beach-resort-project/blob/master/src/images/details-4.jpeg?raw=true"
+    //                         }
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     },
+    // )
 }
 
 const handleGetBookingsRoom = async (req, res) => {
