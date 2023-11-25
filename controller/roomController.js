@@ -30,7 +30,7 @@ const HotelRoom = require("../models/HotelRoom.js")
 
 function getUserDataFromReq(req) {
     return new Promise((resolve, reject) => {
-        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+        jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
             if (err) throw err;
             resolve(userData);
         });

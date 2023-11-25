@@ -33,7 +33,7 @@ const handleHelloWorld = (req, res) => {
 
 function getUserDataFromReq(req) {
     return new Promise((resolve, reject) => {
-        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+        jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
             if (err) throw err;
             resolve(userData);
         });
@@ -77,16 +77,20 @@ const handleLogin = async (req, res) => {
             id: userDoc._id,
             name: userDoc.name
         }, jwtSecret, { expiresIn: "1d" })
-        res.cookie("token", token,
-            {
-                httpOnly: true,
-                path: "/",
-                domain: 'hotel-booking-client-bice.vercel.app',
-                maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
-            }
+        // res.cookie("token", token,
+        //     {
+        //         httpOnly: true,
+        //         path: "/",
+        //         domain: 'hotel-booking-client-bice.vercel.app',
+        //         maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
+        //     }
+        // );
+        // setCookie(token, token, { req, res });
+        res.json({
+            'token': token,
+            "userInfo": userDoc
+        }
         );
-        setCookie(token, token, { req, res });
-        res.json({ 'token': token });
     } else {
         res.status(422).json('not found')
     }
@@ -107,7 +111,8 @@ const handleGetProfile = (req, res) => {
 };
 
 const handleLogout = (req, res) => {
-    res.cookie('token', '').json(true);
+    // res.cookie('token', '').json(true);
+    res.json(true);
 };
 
 const handlePost_Upload_By_Link = async (req, res) => {
@@ -134,8 +139,7 @@ const handlePostUpload = (req, res) => {
 };
 
 const handlePostPlaces = (req, res) => {
-    console.log(req.headers)
-    const { token } = req.cookies;
+    const token = req.headers['authorization'].split(' ')[1];
     const {
         title, address, addedPhotos,
         description, perks, extraInfo,
@@ -156,7 +160,7 @@ const handlePostPlaces = (req, res) => {
 };
 
 const handleGet_User_places = (req, res) => {
-    const { token } = req.cookies;
+    const token = req.headers['authorization'].split(' ')[1];
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
             if (userData) {
@@ -212,7 +216,7 @@ const handleGetPlacesById = async (req, res) => {
 
 
 const handleUpdatePlaces = async (req, res) => {
-    const { token } = req.cookies;
+    const token = req.headers['authorization'].split(' ')[1];
     const {
         id,
         title, address, addedPhotos,
