@@ -14,6 +14,11 @@ const placeSchema = new mongoose.Schema({
     checkIn: Number,
     checkOut: Number,
     maxGuests: Number,
+    hightLights: [String],
+    Facilities: [String],
+    freecancellation: Boolean,
+    aircondition: Boolean,
+    grade: Number,
     price: Number,
 });
 

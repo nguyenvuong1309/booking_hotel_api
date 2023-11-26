@@ -13,14 +13,14 @@ const getUsers = async (req, res, next) => {
     }
 }
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
     const { id } = req.params;
     try {
         const user = await User.findById(id);
         res.status(200).json(user);
     }
     catch (err) {
-        console.log("🚀 ~ file: usercontroller.js:24 ~ getUserById ~ err:", err)
+        next(err)
     }
 }
 

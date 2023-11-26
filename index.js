@@ -14,6 +14,8 @@ const initWebRoutes = require('./routes/api.js');
 const hotelRoute = require('./routes/hotel.js');
 const roomRoute = require('./routes/room.js');
 const userRoute = require('./routes/user.js');
+const carRoute = require('./routes/car.js');
+const errorHandler = require('./middleware/errorHandler.js');
 
 
 require('dotenv').config();
@@ -35,11 +37,15 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
-
 initWebRoutes(app);
 app.use("/", hotelRoute);
 app.use("/", roomRoute);
 app.use("/", userRoute);
+app.use("/", carRoute)
+
+
+
+app.use(errorHandler);
 
 
 const PORT = 4000;

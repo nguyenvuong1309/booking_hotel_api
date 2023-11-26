@@ -14,6 +14,8 @@ const roomController = require("../controller/roomController.js");
 
 
 router.get("/rooms", roomController.getRooms);
+router.post("/rooms", roomController.createRooms);
+//router.get("/rooms", roomController.getRooms);
 router.get("/rooms/:id", roomController.getRoomsById);
 router.get("/hotelRoomBooking", roomController.handleGetBookingsRoom);
 router.post("/hotemRoomBooking", roomController.handleBookingsRoom);

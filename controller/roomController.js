@@ -28,7 +28,7 @@ const jwtSecret = process.env.JWT_SECRET;
 const BookingHotelRoom = require('../models/BookingHotelRooms.js');
 const HotelRoom = require("../models/HotelRoom.js")
 
-function getUserDataFromReq(req) {
+function getUserDataFromReq(req, res, next) {
     try {
         return new Promise((resolve, reject) => {
             jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
@@ -37,13 +37,18 @@ function getUserDataFromReq(req) {
             });
         });
     } catch (err) {
-        console.log("🚀 ~ file: roomController.js:40 ~ getUserDataFromReq ~ err:", err)
+        next(err);
     }
 }
 
-const getRooms = async (req, res) => {
-    const data = await HotelRoom.find({});
-    res.json(data);
+const getRooms = async (req, res, next) => {
+    try {
+        const data = await HotelRoom.find({});
+        res.json(data);
+    }
+    catch (err) {
+        next(err);
+    }
     // res.json(
     //     [
     //         {
@@ -807,9 +812,50 @@ const getRooms = async (req, res) => {
     // )
 }
 
-const getRoomsById = async (req, res) => {
-    const { id } = req.params;
-    res.json(await HotelRoom.findById(id));
+const createRooms = async (req, res, next) => {
+    try {
+        const token = req.headers['authorization'].split(' ')[1];
+        const { hotelRoom } = req.body;
+        jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+            if (err) {
+                next(err)
+            }
+            const response = await HotelRoom.create({
+                sys: {
+                    id: hotelRoom.sys.id,
+                },
+                fields: {
+                    name: hotelRoom.fields.name,
+                    hotelId: hotelRoom.fields.hotelId,
+                    slug: hotelRoom.fields.slug,
+                    type: hotelRoom.fields.type,
+                    price: hotelRoom.fields.price,
+                    size: hotelRoom.fields.size,
+                    capacity: hotelRoom.fields.capacity,
+                    pets: hotelRoom.fields.pets,
+                    breakfast: hotelRoom.fields.breakfast,
+                    featured: hotelRoom.fields.featured,
+                    description: hotelRoom.fields.description,
+                    extras: hotelRoom.fields.extras,
+                    images: hotelRoom.fields.images,
+                    numberOfRemainRoom: hotelRoom.fields.numberOfRemainRoom,
+                }
+            });
+            res.json(response);
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+const getRoomsById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        res.json(await HotelRoom.findById(id));
+    }
+    catch (err) {
+        next(err)
+    }
     // res.json(
     //     {
     //         _id: "6560907006d8e3b612b21902",
@@ -875,32 +921,42 @@ const getRoomsById = async (req, res) => {
     // )
 }
 
-const handleGetBookingsRoom = async (req, res) => {
-    const userData = await getUserDataFromReq(req);
-    res.json(await BookingHotelRoom.find({ user: userData.id }).populate('hotelRoom'));
+const handleGetBookingsRoom = async (req, res, next) => {
+    try {
+        const userData = await getUserDataFromReq(req);
+        res.json(await BookingHotelRoom.find({ user: userData.id }).populate('hotelRoom'));
+    }
+    catch (err) {
+        next(err);
+    }
 }
 
 
-const handleBookingsRoom = async (req, res) => {
-    const userData = await getUserDataFromReq(req);
-    const {
-        hotelRoom, checkIn, checkOut,
-        numberOfGuests, name, phone, price
-    } = req.body;
-    BookingHotelRoom.create({
-        hotelRoom, checkIn, checkOut,
-        numberOfGuests, name, phone, price,
-        user: userData.id,
-    }).then((doc) => {
-        res.json(doc);
-    }).catch((err) => {
-        throw err;
-    })
+const handleBookingsRoom = async (req, res, next) => {
+    try {
+        const userData = await getUserDataFromReq(req);
+        const {
+            hotelRoom, checkIn, checkOut,
+            numberOfGuests, name, phone, price
+        } = req.body;
+        BookingHotelRoom.create({
+            hotelRoom, checkIn, checkOut,
+            numberOfGuests, name, phone, price,
+            user: userData.id,
+        }).then((doc) => {
+            res.json(doc);
+        }).catch((err) => {
+            throw err;
+        })
+    } catch (err) {
+        next(err)
+    }
 };
 
 
 module.exports = {
     getRooms,
+    createRooms,
     getRoomsById,
     handleGetBookingsRoom,
     handleBookingsRoom,

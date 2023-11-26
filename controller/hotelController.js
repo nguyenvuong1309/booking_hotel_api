@@ -224,9 +224,14 @@ const countByCity = async (req, res, next) => {
 };
 
 const getHotelsByCity = async (req, res) => {
-    const { city } = req.params;
-    const data = await Place.find({ address: city })
-    res.json(data);
+    try {
+        const { city } = req.params;
+        const data = await Place.find({ address: city })
+        res.json(data);
+    }
+    catch (err) {
+        next(err)
+    }
     // res.json([
     //     {
     //         "_id": "6548502f894e222125790937",
