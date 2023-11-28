@@ -90,14 +90,16 @@ const handleGetProfile = (req, res, next) => {
         if (token) {
             jwt.verify(token, jwtSecret, {}, async (err, userData) => {
                 if (err) throw err;
-                const { name, email, _id } = await User.findById(userData.id);
-                res.json({ name, email, _id })
+                const data = await User.findById(userData.id);
+                //const { name, email, _id } = await User.findById(userData.id);
+                res.json(data)
             })
         } else {
             res.json(null);
         }
     }
     catch (error) {
+        console.log("----------------------")
         next(error);
     }
 };

@@ -12,6 +12,14 @@ const UserSchema = new Schema({
         unique: true
     },
     password: String,
+
+    isAdmin: Boolean,
+    Web3AddressWallet: String,
+    work: String,
+    education: String,
+    description: String,
+    image: String,
+    address: String,
 });
 
 const UserModel = mongoose.model('User', UserSchema);
