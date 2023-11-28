@@ -65,7 +65,6 @@ const handleLogin = async (req, res, next) => {
         const userDoc = await User.findOne({ email })
         const passOk = bcryptjs.compareSync(password, userDoc.password)
         if (passOk) {
-
             const token = jwt.sign({
                 email: userDoc.email,
                 id: userDoc._id,
