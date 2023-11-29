@@ -27,6 +27,17 @@ const getHotels = async (req, res, next) => {
     }
 };
 
+const getHotelById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const hotel = await Place.find({ _id: id })
+        res.status(200).json(hotel)
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
 const countByType = async (req, res, next) => {
     try {
         const hotelCount = await Hotel.countDocuments({ type: "hotel" });
@@ -108,6 +119,7 @@ const getHotelsByCity = async (req, res) => {
 
 module.exports = {
     getHotels,
+    getHotelById,
     countByType,
     countByCity,
     getHotelsByCity

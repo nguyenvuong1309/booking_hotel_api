@@ -99,7 +99,6 @@ const handleGetProfile = (req, res, next) => {
         }
     }
     catch (error) {
-        console.log("----------------------")
         next(error);
     }
 };
@@ -324,7 +323,6 @@ const handleCreateComment = async (req, res, next) => {
             res.json(userDoc);
         }
         catch (e) {
-            console.log("🚀 ~ file: homeController.js:234 ~ handleCreateComment ~ e:", e)
             res.status(422).json(e)
         }
     }

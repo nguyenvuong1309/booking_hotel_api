@@ -27,6 +27,7 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const BookingHotelRoom = require('../models/BookingHotelRooms.js');
 const HotelRoom = require("../models/HotelRoom.js")
+const Place = require("../models/Place.js");
 
 function getUserDataFromReq(req, res, next) {
     try {
@@ -925,6 +926,7 @@ const handleGetBookingsRoom = async (req, res, next) => {
     try {
         const userData = await getUserDataFromReq(req);
         res.json(await BookingHotelRoom.find({ user: userData.id }).populate('hotelRoom'));
+        //res.json(await BookingHotelRoom.find({}));
     }
     catch (err) {
         next(err);
@@ -937,21 +939,73 @@ const handleBookingsRoom = async (req, res, next) => {
         const userData = await getUserDataFromReq(req);
         const {
             hotelRoom, checkIn, checkOut,
-            numberOfGuests, name, phone, price
-        } = req.body;
-        BookingHotelRoom.create({
-            hotelRoom, checkIn, checkOut,
             numberOfGuests, name, phone, price,
-            user: userData.id,
-        }).then((doc) => {
-            res.json(doc);
-        }).catch((err) => {
-            throw err;
-        })
+            hotelName, hotelAddress, hotelId
+        } = req.body;
+        if (hotelRoom && checkIn && checkOut &&
+            numberOfGuests && name && phone && price &&
+            hotelName && hotelAddress) {
+            BookingHotelRoom.create({
+                hotelRoom, checkIn, checkOut,
+                numberOfGuests, name, phone, price,
+                hotelName, hotelAddress,
+                user: userData.id, hotelId
+            }).then((doc) => {
+                res.json(doc);
+            }).catch((err) => {
+                throw err;
+            })
+        }
+        else {
+            console.log("Plase enter all the field");
+        }
     } catch (err) {
         next(err)
     }
 };
+
+
+const handleGetBookingsRoomById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        res.json(await BookingHotelRoom.find({ _id: id }).populate('hotelId'));
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
+const updateRoomById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const hotelRoom = req.body;
+        // const data = await HotelRoom.create({
+        //     sys: {
+        //         id: hotelRoom.sys.id,
+        //     },
+        //     fields: {
+        //         name: hotelRoom.fields.name,
+        //         hotelId: hotelRoom.fields.hotelId,
+        //         slug: hotelRoom.fields.slug,
+        //         type: hotelRoom.fields.type,
+        //         price: hotelRoom.fields.price,
+        //         size: hotelRoom.fields.size,
+        //         capacity: hotelRoom.fields.capacity,
+        //         pets: hotelRoom.fields.pets,
+        //         breakfast: hotelRoom.fields.breakfast,
+        //         featured: hotelRoom.fields.featured,
+        //         description: hotelRoom.fields.description,
+        //         extras: hotelRoom.fields.extras,
+        //         images: hotelRoom.fields.images,
+        //         numberOfRemainRoom: hotelRoom.fields.numberOfRemainRoom,
+        //     }
+        // });
+        const user = await HotelRoom.findOneAndUpdate({ _id: id }, hotelRoom);
+        res.status(200).json(user);
+    } catch (err) {
+        next(err)
+    }
+}
 
 
 module.exports = {
@@ -960,4 +1014,6 @@ module.exports = {
     getRoomsById,
     handleGetBookingsRoom,
     handleBookingsRoom,
+    handleGetBookingsRoomById,
+    updateRoomById,
 }
