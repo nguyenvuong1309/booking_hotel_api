@@ -72,11 +72,12 @@ const handleLogin = async (req, res, next) => {
                 id: userDoc._id,
                 name: userDoc.name
             }, jwtSecret, { expiresIn: "1d" })
-            res.json({
-                'token': token,
-                "userInfo": userDoc
-            }
-            );
+            // res.json({
+            //     'token': token,
+            //     "userInfo": userDoc
+            // });
+            return res.status(200).json({ user: { id: userDoc._id, email: userDoc.email, fullName: userDoc.fullName }, token: token })
+
         } else {
             res.status(422).json('not found')
         }

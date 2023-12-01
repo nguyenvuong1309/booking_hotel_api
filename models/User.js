@@ -12,7 +12,7 @@ const UserSchema = new Schema({
         unique: true
     },
     password: String,
-
+    fullName: String,
     isAdmin: Boolean,
     Web3AddressWallet: String,
     work: String,

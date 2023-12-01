@@ -15,7 +15,70 @@ const hotelRoute = require('./routes/hotel.js');
 const roomRoute = require('./routes/room.js');
 const userRoute = require('./routes/user.js');
 const carRoute = require('./routes/car.js');
+const socketRoute = require('./socket/routes/socket.js');
 const errorHandler = require('./middleware/errorHandler.js');
+
+
+
+const io = require('socket.io')(8080, {
+    cors: {
+        origin: ['http://localhost:3000', 'http://localhost:5173']
+    }
+});
+const Users = require('./models/User');
+const Conversations = require('./socket/models/Conversations');
+const Messages = require('./socket/models/Messages');
+
+
+let users = [];
+io.on('connection', socket => {
+    console.log('User connected', socket.id);
+    socket.on('addUser', userId => {
+        const isUserExist = users.find(user => user.userId === userId);
+        if (!isUserExist) {
+            const user = { userId, socketId: socket.id };
+            users.push(user);
+            io.emit('getUsers', users);
+        }
+    });
+
+    socket.on('sendMessage', async ({ senderId, receiverId, message, conversationId }) => {
+        const receiver = users.find(user => user.userId === receiverId);
+        const sender = users.find(user => user.userId === senderId);
+        const user = await Users.findById(senderId);
+        console.log('sender :>> ', sender, receiver);
+        if (receiver) {
+            console.log("getMes")
+            io.to(receiver.socketId).to(sender.socketId).emit('getMessage', {
+                senderId,
+                message,
+                conversationId,
+                receiverId,
+                user: { id: user._id, fullName: user.fullName, email: user.email }
+            });
+        } else {
+
+
+            console.log("getMes")
+            io.to(sender.socketId).emit('getMessage', {
+                senderId,
+                message,
+                conversationId,
+                receiverId,
+                user: { id: user._id, fullName: user.fullName, email: user.email }
+
+            });
+        }
+    });
+
+    socket.on('disconnect', () => {
+        users = users.filter(user => user.socketId !== socket.id);
+        io.emit('getUsers', users);
+    });
+    // io.emit('getUsers', socket.userId);
+});
+
+
 
 
 require('dotenv').config();
@@ -42,6 +105,7 @@ app.use("/", hotelRoute);
 app.use("/", roomRoute);
 app.use("/", userRoute);
 app.use("/", carRoute)
+app.use("/", socketRoute)
 
 
 
