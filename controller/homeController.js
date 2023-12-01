@@ -47,12 +47,13 @@ function getUserDataFromReq(req, res, next) {
 }
 
 const handleRegister = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, fullName } = req.body;
     try {
         const userDoc = await User.create({
             name,
             email,
             password: bcryptjs.hashSync(password, bcryptSalt),
+            fullName
         });
         res.json(userDoc);
     }
