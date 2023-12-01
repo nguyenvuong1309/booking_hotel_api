@@ -22,7 +22,9 @@ const errorHandler = require('./middleware/errorHandler.js');
 
 const io = require('socket.io')(8080, {
     cors: {
-        origin: ['http://localhost:3000', 'http://localhost:5173']
+        origin: ['http://localhost:3000', 'http://localhost:5173',
+            'https://hotel-booking-client-bice.vercel.app'
+        ]
     }
 });
 const Users = require('./models/User');
