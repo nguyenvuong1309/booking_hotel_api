@@ -23,6 +23,7 @@ router.get("/hotelRoomBooking", roomController.handleGetBookingsRoom);
 router.post("/hotemRoomBooking", roomController.handleBookingsRoom);
 
 router.get("/hotelRoomBooking/:id", roomController.handleGetBookingsRoomById);
+router.delete('/hotelRoomBooking/:id', roomController.deleteBookingRoomById);
 
 //router.get("/", getHotels);
 

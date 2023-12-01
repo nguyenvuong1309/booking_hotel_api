@@ -24,7 +24,8 @@ const bookingCarSchema = new mongoose.Schema({
     // checkOut: Number,
     // maxGuests: Number,
     // price: Number,
-    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // person booking.
+    carId: { type: mongoose.Schema.Types.ObjectId, ref: "Car" }, // car being booked.
     from: String,
     to: String,
     departureTime: String,

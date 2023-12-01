@@ -33,7 +33,9 @@ function getUserDataFromReq(req, res, next) {
     try {
         return new Promise((resolve, reject) => {
             jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
-                if (err) throw err;
+                if (err) {
+                    next(err)
+                }
                 resolve(userData);
             });
         });
@@ -87,15 +89,17 @@ const handleLogin = async (req, res, next) => {
 const handleGetProfile = (req, res, next) => {
     try {
         const token = req.headers['authorization'].split(' ')[1]
-        if (token) {
+        if (token && token !== "null") {
             jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-                if (err) throw err;
-                const data = await User.findById(userData.id);
+                if (err) {
+                    next(err);
+                }
+                const data = await User.findById(userData?.id);
                 //const { name, email, _id } = await User.findById(userData.id);
                 res.json(data)
             })
         } else {
-            res.json(null);
+            res.status(404).json({ error: "don't have token" })
         }
     }
     catch (error) {
@@ -142,6 +146,7 @@ const handlePostUpload = (req, res, next) => {
 };
 
 const handlePostPlaces = (req, res, next) => {
+    console.log(req.headers)
     try {
         const token = req.headers['authorization'].split(' ')[1];
         const {
@@ -152,7 +157,9 @@ const handlePostPlaces = (req, res, next) => {
             airCondition, grade
         } = req.body.placeData;
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-            if (err) throw err;
+            if (err) {
+                next(err)
+            }
             const placeDoc = await Place.create({
                 owner: userData.id,
                 title, address, photos: addedPhotos,
@@ -248,12 +255,13 @@ const handleUpdatePlaces = async (req, res, next) => {
         } = req.body.placeData;
 
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-            if (err) throw err;
+            if (err) {
+                next(err)
+            }
             const placeDoc = await Place.findById(id);
 
             if (userData.id === placeDoc?.owner?.toString()) {
                 placeDoc.set({
-                    id,
                     title, address, photos: addedPhotos,
                     description, perks, extraInfo,
                     checkIn, checkOut, maxGuests,
@@ -293,7 +301,7 @@ const handleBookingsRoom = async (req, res, next) => {
         }).then((doc) => {
             res.json(doc);
         }).catch((err) => {
-            throw err;
+            next(err)
         })
     }
     catch (err) {

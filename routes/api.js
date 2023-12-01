@@ -18,9 +18,11 @@ const initWebRoutes = (app) => {
     router.post("/upload", photosMiddleware.array('photos', 100), homeController.handlePostUpload)
     router.post('/places', homeController.handlePostPlaces)
     router.get('/user-places', homeController.handleGet_User_places)
+
     router.get('/places/:id', homeController.handleGetPlacesById)
-    router.put('/places', homeController.handleUpdatePlaces)
+    router.put('/places/:id', homeController.handleUpdatePlaces)
     router.get('/places', homeController.handleGetAllPlaces)
+
     router.post('/bookings', homeController.handleBookingsRoom)
     router.get('/bookings', homeController.handleGetBookingInfo)
 

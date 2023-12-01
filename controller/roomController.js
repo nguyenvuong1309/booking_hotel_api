@@ -33,7 +33,9 @@ function getUserDataFromReq(req, res, next) {
     try {
         return new Promise((resolve, reject) => {
             jwt.verify(req.headers['authorization'].split(' ')[1], jwtSecret, {}, async (err, userData) => {
-                if (err) throw err;
+                if (err) {
+                    next(err)
+                }
                 resolve(userData);
             });
         });
@@ -48,6 +50,7 @@ const getRooms = async (req, res, next) => {
         res.json(data);
     }
     catch (err) {
+
         next(err);
     }
     // res.json(
@@ -839,6 +842,7 @@ const createRooms = async (req, res, next) => {
                     description: hotelRoom.fields.description,
                     extras: hotelRoom.fields.extras,
                     images: hotelRoom.fields.images,
+                    policyCancelBooking: hotelRoom.fields.policyCancelBooking,
                     numberOfRemainRoom: hotelRoom.fields.numberOfRemainRoom,
                 }
             });
@@ -953,7 +957,7 @@ const handleBookingsRoom = async (req, res, next) => {
             }).then((doc) => {
                 res.json(doc);
             }).catch((err) => {
-                throw err;
+                next(err)
             })
         }
         else {
@@ -1008,6 +1012,17 @@ const updateRoomById = async (req, res, next) => {
 }
 
 
+const deleteBookingRoomById = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        console.log("🚀 ~ file: roomController.js:1016 ~ deleteBookingRoomById ~ id:", id)
+        const response = await BookingHotelRoom.deleteOne({ _id: id })
+        res.status(200).json(response)
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     getRooms,
     createRooms,
@@ -1016,4 +1031,5 @@ module.exports = {
     handleBookingsRoom,
     handleGetBookingsRoomById,
     updateRoomById,
+    deleteBookingRoomById,
 }

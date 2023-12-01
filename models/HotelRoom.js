@@ -38,6 +38,7 @@ const hotelRoomSchema = new mongoose.Schema({
         description: [String],
         extras: [String],
         numberOfRemainRoom: Number,
+        policyCancelBooking: Number,
         images: [
             {
                 fields: {

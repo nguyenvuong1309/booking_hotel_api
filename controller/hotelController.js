@@ -41,10 +41,14 @@ const getHotelById = async (req, res, next) => {
 const countByType = async (req, res, next) => {
     try {
         const hotelCount = await Hotel.countDocuments({ type: "hotel" });
+        console.log("🚀 ~ file: hotelController.js:44 ~ countByType ~ hotelCount:", hotelCount)
         const apartmentCount = await Hotel.countDocuments({ type: "apartment" });
+        console.log("🚀 ~ file: hotelController.js:46 ~ countByType ~ apartmentCount:", apartmentCount)
         const resortCount = await Hotel.countDocuments({ type: "resort" });
+        console.log("🚀 ~ file: hotelController.js:48 ~ countByType ~ resortCount:", resortCount)
         const villaCount = await Hotel.countDocuments({ type: "villa" });
         const cabinCount = await Hotel.countDocuments({ type: "cabin" });
+        console.log("🚀 ~ file: hotelController.js:51 ~ countByType ~ cabinCount:", cabinCount)
 
         res.status(200).json([
             { type: "hotel", count: hotelCount },

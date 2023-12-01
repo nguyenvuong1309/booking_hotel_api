@@ -19,11 +19,13 @@ const carSchema = new mongoose.Schema({
     // checkOut: Number,
     // maxGuests: Number,
     // price: Number,
+
     name: String,
     from: String,
     to: String,
     departureTime: String,
     estimatedTimeOfArrival: String,
+    numberRemain: Number,
     price: Number,
     images: [String],
     description: String

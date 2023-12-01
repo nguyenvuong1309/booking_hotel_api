@@ -21,6 +21,6 @@ router.put("/cars/:id", carController.updateCarById);
 router.get("/bookingCar", carController.getAllBookingCar)
 router.post("/createBookingCar", carController.createBookingCar)
 router.get("/bookingCar/:id", carController.createBookingCar)
-router.put("/bookingCar/:id", carController.createBookingCar)
+router.put("/bookingCar/:id", carController.updateBookingCarById)
 
 module.exports = router;
