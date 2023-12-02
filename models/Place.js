@@ -20,6 +20,8 @@ const placeSchema = new mongoose.Schema({
     aircondition: Boolean,
     grade: Number,
     price: Number,
+    star: Number,
+    city: String
 });
 
 const PlaceModel = mongoose.model('Place', placeSchema);

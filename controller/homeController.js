@@ -253,7 +253,8 @@ const handleUpdatePlaces = async (req, res, next) => {
             description, perks, extraInfo,
             checkIn, checkOut, maxGuests,
             price, hightLights, freeCancellation,
-            airCondition, grade
+            airCondition, grade, star,
+            city
         } = req.body.placeData;
 
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -268,7 +269,8 @@ const handleUpdatePlaces = async (req, res, next) => {
                     description, perks, extraInfo,
                     checkIn, checkOut, maxGuests,
                     price, hightLights, freeCancellation,
-                    airCondition, grade
+                    airCondition, grade, star,
+                    city
                 })
                 await placeDoc.save();
                 res.json('ok');
