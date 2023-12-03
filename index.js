@@ -23,6 +23,7 @@ const errorHandler = require('./middleware/errorHandler.js');
 const io = require('socket.io')(8080, {
     cors: {
         origin: ['http://localhost:3000', 'http://localhost:5173',
+            'https://hotel-booking-client-bice.vercel.app',
             'https://hotel-booking-client-bice.vercel.app'
         ]
     }
@@ -98,6 +99,7 @@ app.use(cors({
         'https://hotel-booking-website-jqka.netlify.app',
         'https://hotel-booking-client-bice.vercel.app',
         'https://hotel-booking-client-nopskz22g-vuongs-projects-c0daf0e4.vercel.app',
+        'https://hotel-booking-client-aws.vercel.app'
     ],
 }));
 app.use(cookieParser());
