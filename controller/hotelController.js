@@ -39,52 +39,64 @@ const getHotelById = async (req, res, next) => {
 }
 
 const countByType = async (req, res, next) => {
-    try {
-        const hotelCount = await Hotel.countDocuments({ type: "hotel" });
-        console.log("🚀 ~ file: hotelController.js:44 ~ countByType ~ hotelCount:", hotelCount)
-        const apartmentCount = await Hotel.countDocuments({ type: "apartment" });
-        console.log("🚀 ~ file: hotelController.js:46 ~ countByType ~ apartmentCount:", apartmentCount)
-        const resortCount = await Hotel.countDocuments({ type: "resort" });
-        console.log("🚀 ~ file: hotelController.js:48 ~ countByType ~ resortCount:", resortCount)
-        const villaCount = await Hotel.countDocuments({ type: "villa" });
-        const cabinCount = await Hotel.countDocuments({ type: "cabin" });
-        console.log("🚀 ~ file: hotelController.js:51 ~ countByType ~ cabinCount:", cabinCount)
+    res.json({ "vuong": "vuong" })
 
-        res.status(200).json([
-            { type: "hotel", count: hotelCount },
-            { type: "apartments", count: apartmentCount },
-            { type: "resorts", count: resortCount },
-            { type: "villas", count: villaCount },
-            { type: "cabins", count: cabinCount },
-        ]);
-    } catch (err) {
-        next(err);
-    }
+
+    // try {
+    //     const hotelCount = await Hotel.countDocuments({ type: "hotel" });
+    //     console.log("🚀 ~ file: hotelController.js:44 ~ countByType ~ hotelCount:", hotelCount)
+    //     const apartmentCount = await Hotel.countDocuments({ type: "apartment" });
+    //     console.log("🚀 ~ file: hotelController.js:46 ~ countByType ~ apartmentCount:", apartmentCount)
+    //     const resortCount = await Hotel.countDocuments({ type: "resort" });
+    //     console.log("🚀 ~ file: hotelController.js:48 ~ countByType ~ resortCount:", resortCount)
+    //     const villaCount = await Hotel.countDocuments({ type: "villa" });
+    //     const cabinCount = await Hotel.countDocuments({ type: "cabin" });
+    //     console.log("🚀 ~ file: hotelController.js:51 ~ countByType ~ cabinCount:", cabinCount)
+
+    //     res.status(200).json([
+    //         { type: "hotel", count: hotelCount },
+    //         { type: "apartments", count: apartmentCount },
+    //         { type: "resorts", count: resortCount },
+    //         { type: "villas", count: villaCount },
+    //         { type: "cabins", count: cabinCount },
+    //     ]);
+    // } catch (err) {
+    //     next(err);
+    // }
 };
 
 const countByCity = async (req, res, next) => {
-    const cities = req.query.cities.split(",");
-    try {
-        const list = await Promise.all(
-            cities.map((city) => {
-                return Hotel.countDocuments({ city: city });
-            })
-        );
-        res.status(200).json(list);
-    } catch (err) {
-        next(err);
-    }
+    res.json({ "vuong": "vuong" })
+    //res.json(await Hotel.find({}))
+
+
+    // console.log("in")
+    // console.log(req.query)
+    // const cities = req.query.cities.split(",");
+    // console.log("🚀 ~ file: hotelController.js:67 ~ countByCity ~ cities:", cities)
+    // try {
+    //     const list = await Promise.all(
+    //         cities.map((city) => {
+    //             return Hotel.countDocuments({ city: city });
+    //         })
+    //     );
+    //     res.status(200).json(list);
+    // } catch (err) {
+    //     console.log("🚀 ~ file: hotelController.js:78 ~ countByCity ~ err:", err)
+    //     next(err);
+    // }
 };
 
 const getHotelsByCity = async (req, res) => {
-    try {
-        const { city } = req.params;
-        const data = await Place.find({ address: city })
-        res.json(data);
-    }
-    catch (err) {
-        next(err)
-    }
+    res.json({ "vuong": "vuong" })
+    // try {
+    //     const { city } = req.params;
+    //     const data = await Place.find({ address: city })
+    //     res.json(data);
+    // }
+    // catch (err) {
+    //     next(err)
+    // }
     // res.json([
     //     {
     //         "_id": "6548502f894e222125790937",
