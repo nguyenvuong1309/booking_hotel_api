@@ -107,7 +107,7 @@ const server = http.createServer(express())
 //         origin: "*"
 //     }
 //});
-const io = require('socket.io')(80, {
+const io = require('socket.io')(8080, {
     cors: {
         origin:
             "*"

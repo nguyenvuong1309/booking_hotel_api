@@ -39,7 +39,7 @@ const updateCarById = async (req, res) => {
 
 
 const getAllBookingCar = async (req, res) => {
-    return await BookingCar.find({})
+    res.json(await BookingCar.find({}))
 }
 const createBookingCar = async (req, res) => {
     const data = req.body;
