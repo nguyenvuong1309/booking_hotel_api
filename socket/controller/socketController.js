@@ -7,34 +7,71 @@ const Conversations = require('../models/Conversations');
 const Messages = require('../models/Messages');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+var crypto = require("crypto");
 
+const algorithm = "aes-256-cbc";
 
+const key = "adnan-tech-programing-computers";
+const iv = Buffer.from("d2a094145042a8f482c290a8100e6862", "hex"); //crypto.randomBytes(16);
 
 const register = async (req, res, next) => {
+  try {
+    const { token, fullName, email, password } = req.body;
     try {
-        const { fullName, email, password } = req.body;
+      // Sending secret key and response token to Google Recaptcha API for authentication.
+      const response = await axios.post(
+        `https://www.google.com/recaptcha/api/siteverify?secret=6Lf7gOQpAAAAAAAMqeicyrjpC0eKBBTPa2cC0Aqs&response=${token}`
+      );
 
-        if (!fullName || !email || !password) {
-            res.status(400).send('Please fill all required fields');
-        } else {
+      // Check response status and send back to the client-side
+      if (response.data.success) {
+        const userDoc = await User.findOne({ email });
+        const passOk = bcryptjs.compareSync(password, userDoc.password);
+        if (passOk) {
+          if (!fullName || !email || !password) {
+            res.status(400).send("Please fill all required fields");
+          } else {
             const isAlreadyExist = await Users.findOne({ email });
             if (isAlreadyExist) {
-                res.status(400).send('User already exists');
+              res.status(400).send("User already exists");
             } else {
-                const newUser = new Users({ fullName, email });
-                bcryptjs.hash(password, 10, (err, hashedPassword) => {
-                    newUser.set('password', hashedPassword);
-                    newUser.save();
-                    next();
-                })
-                return res.status(200).send('User registered successfully');
-            }
-        }
+              const cipher = crypto.createCipheriv(algorithm, key, iv);
 
+              let encryptFullName = cipher.update(fullName, "utf-8", "hex");
+              encryptFullName += cipher.final("hex");
+
+              let encryptEmail = cipher.update(email, "utf-8", "hex");
+              encryptEmail += cipher.final("hex");
+
+              const base64Data = Buffer.from("iv", "binary").toString("base64");
+              const newUser = new Users({
+                encryptFullName,
+                encryptEmail,
+                base64Data,
+              });
+
+              bcryptjs.hash(password, 10, (err, hashedPassword) => {
+                newUser.set("password", hashedPassword);
+                newUser.save();
+                next();
+              });
+              return res.status(200).send("User registered successfully");
+            }
+          }
+        }
+      } else {
+        //res.send("Robot 🤖");
+        res.status(422).json("not found");
+      }
     } catch (error) {
-        console.log(error, 'Error')
+      // Handle any errors that occur during the reCAPTCHA verification process
+      console.error(error);
+      res.status(500).send("Error verifying reCAPTCHA");
     }
-}
+  } catch (error) {
+    console.log(error, "Error");
+  }
+};
 
 
 const login = async (req, res, next) => {
