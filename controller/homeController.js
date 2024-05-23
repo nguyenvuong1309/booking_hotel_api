@@ -92,7 +92,7 @@ const handleLogin = async (req, res, next) => {
     try {
       // Sending secret key and response token to Google Recaptcha API for authentication.
       const response = await axios.post(
-        `https://www.google.com/recaptcha/api/siteverify?secret=6Lf7gOQpAAAAAAAMqeicyrjpC0eKBBTPa2cC0Aqs&response=${token}`
+        `https://www.google.com/recaptcha/api/siteverify?secret=6LcRtOUpAAAAAFEIBKTni6ZCdqSVnucLTqSprv5u&response=${token}`
       );
 
       // Check response status and send back to the client-side
