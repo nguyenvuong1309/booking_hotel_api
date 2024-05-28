@@ -55,34 +55,50 @@ const key = "adnan-tech-programming-computers";
 const iv = Buffer.from("d2a094145042a8f482c290a8100e6862", "hex"); //crypto.randomBytes(16);
 
 const handleRegister = async (req, res) => {
-  const { name, email, password, fullName } = req.body;
+  const { token, name, email, password, fullName } = req.body;
   try {
-    let cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encryptName = cipher.update(name, "utf-8", "hex");
-    encryptName += cipher.final("hex");
-    cipher = null;
+    // Sending secret key and response token to Google Recaptcha API for authentication.
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=6LcRtOUpAAAAAFEIBKTni6ZCdqSVnucLTqSprv5u&response=${token}`
+    );
+    if (response.data.success) {
+      try {
+        let cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encryptName = cipher.update(name, "utf-8", "hex");
+        encryptName += cipher.final("hex");
+        cipher = null;
 
-    cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encryptEmail = cipher.update(email, "utf-8", "hex");
-    encryptEmail += cipher.final("hex");
-    cipher = null;
+        cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encryptEmail = cipher.update(email, "utf-8", "hex");
+        encryptEmail += cipher.final("hex");
+        cipher = null;
 
-    cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encryptFullName = cipher.update(fullName, "utf-8", "hex");
-    encryptFullName += cipher.final("hex");
-    cipher = null;
+        cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encryptFullName = cipher.update(fullName, "utf-8", "hex");
+        encryptFullName += cipher.final("hex");
+        cipher = null;
 
-    const base64Data = Buffer.from("iv", "binary").toString("base64");
-    const userDoc = await User.create({
-      name: encryptName,
-      email: encryptEmail,
-      password: bcryptjs.hashSync(password, bcryptSalt),
-      fullName: encryptFullName,
-    });
-    res.json(userDoc);
-  } catch (e) {
-    console.log("🚀 ~ handleRegister ~ e:", e);
-    res.status(422).json(e);
+        const base64Data = Buffer.from("iv", "binary").toString("base64");
+        const userDoc = await User.create({
+          name: encryptName,
+          email: encryptEmail,
+          password: bcryptjs.hashSync(password, bcryptSalt),
+          fullName: encryptFullName,
+        });
+        res.json(userDoc);
+      } catch (e) {
+        console.log("🚀 ~ handleRegister ~ e:", e);
+        res.status(422).json(e);
+      }
+    } else {
+      //res.send("Robot 🤖");
+      res.status(422).json("not found");
+    }
+  } catch (error) {
+    console.log("🚀 ~ handleLogin ~ error:", error);
+    // Handle any errors that occur during the reCAPTCHA verification process
+    console.error(error);
+    res.status(500).send("Error verifying reCAPTCHA");
   }
 };
 
@@ -177,7 +193,7 @@ const handleGetProfile = (req, res, next) => {
         ];
 
         fieldsToDecrypt.forEach((field) => {
-          if (data[field]) {
+          if (data?.[field]) {
             // Check if the field exists in userDoc
             let decipher = crypto.createDecipheriv(
               algorithm,
