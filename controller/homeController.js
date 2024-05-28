@@ -130,6 +130,7 @@ const handleRegister = async (req, res) => {
 };
 
 const handleLogin = async (req, res, next) => {
+  console.log("🚀 ~ handleLogin ~ handleLogin:");
   try {
     const { token, email, password } = req.body;
     const response = loginAtempt(email);
