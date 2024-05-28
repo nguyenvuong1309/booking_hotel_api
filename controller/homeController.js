@@ -54,8 +54,39 @@ const algorithm = "aes-256-cbc";
 const key = "adnan-tech-programming-computers";
 const iv = Buffer.from("d2a094145042a8f482c290a8100e6862", "hex"); //crypto.randomBytes(16);
 
+const registrationAttempts = new Map();
+
+const registerAtempt = (email) => {
+  const currentTime = Date.now();
+  if (!registrationAttempts.has(email)) {
+    registrationAttempts.set(email, []);
+  }
+
+  const attempts = registrationAttempts.get(email);
+  const recentAttempts = attempts.filter(
+    (attempt) => currentTime - attempt < 5 * 60 * 1000
+  );
+
+  if (recentAttempts.length >= 5) {
+    const lastAttemptTime = recentAttempts[recentAttempts.length - 1];
+    const timeSinceLastAttempt = currentTime - lastAttemptTime;
+    if (timeSinceLastAttempt < 10 * 60 * 1000) {
+      console.log(
+        "🚀 ~ returnres.status ~ ,Too many registration attempts. Please try again later."
+      );
+      return false;
+    } else {
+      registrationAttempts.set(email, []);
+    }
+  }
+};
+
 const handleRegister = async (req, res) => {
   const { token, name, email, password, fullName } = req.body;
+  const res = registerAtempt(email);
+  if (!res) {
+    return;
+  }
   try {
     // Sending secret key and response token to Google Recaptcha API for authentication.
     const response = await axios.post(
