@@ -83,8 +83,8 @@ const registerAtempt = (email) => {
 
 const handleRegister = async (req, res) => {
   const { token, name, email, password, fullName } = req.body;
-  const res = registerAtempt(email);
-  if (!res) {
+  const response = registerAtempt(email);
+  if (!response) {
     return;
   }
   try {
