@@ -175,7 +175,7 @@ const handleGetProfile = (req, res, next) => {
     if (token && token !== "null") {
       jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) {
-          next(err);
+          return next(err); // Add return to stop further execution
         }
         const data = await User.findById(userData?.id);
 
@@ -194,7 +194,6 @@ const handleGetProfile = (req, res, next) => {
 
         fieldsToDecrypt.forEach((field) => {
           if (data?.[field]) {
-            // Check if the field exists in userDoc
             let decipher = crypto.createDecipheriv(
               algorithm,
               key,
@@ -205,17 +204,19 @@ const handleGetProfile = (req, res, next) => {
             decryptedData[field] = decryptedField;
           }
         });
-        //const { name, email, _id } = await User.findById(userData.id);
         console.log("🚀 ~ jwt.verify ~ decryptedData:", decryptedData);
-        res.json({ _id: userData?.id, ...decryptedData });
+        return res.json({ _id: userData?.id, ...decryptedData }); // Ensure response is returned
       });
     } else {
-      res.status(404).json({ error: "don't have token" });
+      return res.status(404).json({ error: "don't have token" }); // Ensure response is returned
     }
   } catch (error) {
-    next(error);
+    console.log("🚀 ~ handleGetProfile ~ error:", error);
+    return next(error); // Ensure function returns after error
   }
 };
+
+
 
 const handleLogout = (req, res) => {
     // res.cookie('token', '').json(true);
