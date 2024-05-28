@@ -133,7 +133,7 @@ const handleLogin = async (req, res, next) => {
  
   try {
     const { token, email, password } = req.body;
-    const response = loginAtempt(email);
+    // const response = loginAtempt(email);
     if (!response) {
       res.status(422).json("error");
     }
