@@ -56,7 +56,7 @@ const iv = Buffer.from("d2a094145042a8f482c290a8100e6862", "hex"); //crypto.rand
 
 const registrationAttempts = new Map();
 
-const registerAtempt = (email) => {
+const loginAtempt = (email) => {
   const currentTime = Date.now();
   if (!registrationAttempts.has(email)) {
     registrationAttempts.set(email, []);
@@ -83,10 +83,6 @@ const registerAtempt = (email) => {
 
 const handleRegister = async (req, res) => {
   const { token, name, email, password, fullName } = req.body;
-  const response = registerAtempt(email);
-  if (!response) {
-    return;
-  }
   try {
     // Sending secret key and response token to Google Recaptcha API for authentication.
     const response = await axios.post(
@@ -136,6 +132,10 @@ const handleRegister = async (req, res) => {
 const handleLogin = async (req, res, next) => {
   try {
     const { token, email, password } = req.body;
+    const response = loginAtempt(email);
+    if (!response) {
+      return;
+    }
     try {
       // Sending secret key and response token to Google Recaptcha API for authentication.
       const response = await axios.post(
